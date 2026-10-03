@@ -1,0 +1,819 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07111f">
+<meta name="color-scheme" content="dark">
+<meta name="format-detection" content="telephone=no">
+<meta name="description" content="Fun English voice brain training games for kids: word building, logic patterns, math, and focus.">
+<title>Kids Brain Gym — English Audio 🧠</title>
+
+<!-- PWA manifest — populated at runtime by the inline script below -->
+<link rel="manifest" id="manifestLink" href="about:blank">
+
+<!-- Icons — set at runtime as data URIs -->
+<link rel="icon" id="favicon" href="data:,">
+<link rel="apple-touch-icon" id="appleIcon" href="data:,">
+
+<!-- iOS standalone -->
+<meta name="application-name" content="Kids Brain Gym">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Brain Gym">
+<meta name="mobile-web-app-capable" content="yes">
+
+<style>
+:root{
+  --bg1:#07111f;--bg2:#10233c;--card:rgba(15,31,52,.88);--card2:rgba(22,42,68,.92);
+  --text:#f5f8ff;--muted:#aebbd0;--accent:#62d7ff;--accent2:#8b7cff;
+  --good:#49df9a;--bad:#ff6f91;--gold:#ffd166;--line:rgba(255,255,255,.11);
+  --shadow:0 20px 60px rgba(0,0,0,.34);--radius:24px
+}
+*{box-sizing:border-box}
+html{background:var(--bg1);-webkit-text-size-adjust:100%}
+body{
+  margin:0;min-height:100vh;min-height:100dvh;
+  font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  color:var(--text);background:
+  radial-gradient(circle at 10% 0%,rgba(98,215,255,.16),transparent 28%),
+  radial-gradient(circle at 100% 15%,rgba(139,124,255,.18),transparent 30%),
+  linear-gradient(145deg,var(--bg1),var(--bg2));
+  overflow-x:hidden;-webkit-tap-highlight-color:transparent;
+  overscroll-behavior-y:none
+}
+button{font:inherit}
+.app{
+  width:min(100%,720px);margin:auto;
+  padding-top:calc(18px + env(safe-area-inset-top,0px));
+  padding-right:calc(14px + env(safe-area-inset-right,0px));
+  padding-bottom:calc(30px + env(safe-area-inset-bottom,0px));
+  padding-left:calc(14px + env(safe-area-inset-left,0px))
+}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:.2px}
+.brandIcon{width:44px;height:44px;display:grid;place-items:center;border-radius:15px;background:linear-gradient(135deg,#62d7ff,#8b7cff);box-shadow:0 10px 28px rgba(98,215,255,.18);font-size:24px}
+.topActions{display:flex;gap:8px;align-items:center}
+.iconBtn,.backBtn{border:1px solid var(--line);background:rgba(255,255,255,.07);color:var(--text);border-radius:14px;padding:10px 13px;cursor:pointer}
+.installBtn{border:0;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#07111f;font-weight:900;border-radius:14px;padding:10px 13px;cursor:pointer;font-size:13px;display:none}
+.installBtn.show{display:inline-block}
+.iconBtn:active,.backBtn:active,.gameCard:active,.option:active,.installBtn:active{transform:scale(.98)}
+.screen{display:none}.screen.active{display:block}
+.hero,.panel,.gameCard,.resultCard,.settings{background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:var(--radius)}
+.hero{padding:24px 20px;text-align:center;margin-bottom:14px}
+.hero h1{font-size:clamp(28px,7vw,44px);margin:0 0 8px;line-height:1.05}
+.hero p{color:var(--muted);margin:0;line-height:1.6}
+.badges{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;margin-top:14px}
+.badge{font-size:12px;color:#dbe8f7;border:1px solid var(--line);padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.05)}
+.sectionTitle{display:flex;justify-content:space-between;align-items:center;margin:16px 4px 9px}
+.sectionTitle h2{font-size:16px;margin:0}.sectionTitle span{font-size:12px;color:var(--muted)}
+.games{display:grid;gap:11px}
+.gameCard{width:100%;text-align:left;color:var(--text);padding:16px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:.18s;position:relative;overflow:hidden}
+.gameCard:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(98,215,255,.08),transparent);pointer-events:none}
+.gameIcon{width:50px;height:50px;border-radius:17px;display:grid;place-items:center;font-size:25px;background:rgba(255,255,255,.08);flex:none}
+.gameCard h3{margin:0 0 4px;font-size:16px}.gameCard p{margin:0;color:var(--muted);font-size:13px;line-height:1.45}
+.chev{margin-left:auto;color:var(--muted);font-size:22px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.stat{padding:11px;text-align:center;background:rgba(255,255,255,.045);border:1px solid var(--line);border-radius:16px}
+.stat b{display:block;font-size:18px}.stat span{font-size:11px;color:var(--muted)}
+.panel{padding:16px}
+.gameHeader{display:flex;align-items:center;gap:9px;margin-bottom:12px}.gameHeader .title{flex:1}.gameHeader h2{margin:0;font-size:18px}.gameHeader small{color:var(--muted)}
+.progressWrap{height:8px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden;margin:10px 0 14px}
+.progress{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .25s}
+.hud{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:12px}
+.hudItem{padding:9px;text-align:center;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.045)}
+.hudItem b{display:block;font-size:16px}.hudItem span{font-size:10px;color:var(--muted)}
+.question{min-height:150px;display:grid;place-items:center;text-align:center;padding:20px;border-radius:20px;background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.025));border:1px solid var(--line);margin-bottom:11px}
+.questionText{font-size:clamp(22px,6vw,34px);font-weight:900;line-height:1.3}
+.questionSub{display:block;font-size:14px;color:var(--muted);font-weight:500;margin-top:8px}
+.voiceRow{display:flex;gap:8px;justify-content:center;margin:-2px 0 12px}
+.voiceBtn{border:1px solid var(--line);background:rgba(255,255,255,.06);color:#dceaff;border-radius:12px;padding:8px 11px;cursor:pointer;font-size:12px}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.option{min-height:58px;border:1px solid var(--line);border-radius:17px;background:var(--card2);color:var(--text);cursor:pointer;font-weight:800;padding:10px;transition:.15s}
+.option.correct{border-color:rgba(73,223,154,.8);background:rgba(73,223,154,.13)}
+.option.wrong{border-color:rgba(255,111,145,.8);background:rgba(255,111,145,.12)}
+.option:disabled{cursor:default;opacity:.94}
+.feedback{text-align:center;min-height:25px;font-weight:800;margin-top:10px}.good{color:var(--good)}.bad{color:var(--bad)}
+.tapArea{height:310px;border-radius:24px;border:1px solid var(--line);display:grid;place-items:center;cursor:pointer;user-select:none;touch-action:manipulation;transition:background .12s,transform .08s;background:#17304d}
+.tapArea.go{background:rgba(73,223,154,.25);border-color:rgba(73,223,154,.55)}
+.tapArea.stop{background:rgba(255,111,145,.16)}
+.tapCircle{width:150px;height:150px;border-radius:50%;display:grid;place-items:center;font-weight:900;font-size:20px;background:rgba(255,255,255,.09);border:2px solid rgba(255,255,255,.18);text-align:center;padding:20px}
+.tapHint{text-align:center;color:var(--muted);font-size:13px;margin:10px 0}
+.resultCard{padding:24px;text-align:center}.resultEmoji{font-size:56px}.resultCard h2{margin:8px 0}.resultScore{font-size:42px;font-weight:900;color:var(--gold)}
+.resultActions{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+.primary,.secondary{border:0;border-radius:14px;padding:12px 18px;cursor:pointer;font-weight:900}
+.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#07111f}
+.secondary{background:rgba(255,255,255,.08);color:var(--text);border:1px solid var(--line)}
+.settings{padding:17px}.settings h2{margin-top:0}.setting{padding:12px 0;border-bottom:1px solid var(--line)}.setting:last-child{border-bottom:0}
+.setting label{display:flex;justify-content:space-between;align-items:center;gap:10px}.setting small{display:block;color:var(--muted);margin-top:6px;line-height:1.45}
+select,input[type=range]{width:100%}select{background:#10233c;color:white;border:1px solid var(--line);border-radius:12px;padding:10px;margin-top:8px}
+.rangeRow{display:grid;grid-template-columns:1fr 55px;gap:10px;align-items:center}.rangeVal{text-align:right;color:var(--accent);font-weight:800}
+.toggle{width:48px;height:27px;border-radius:99px;background:#33465e;position:relative;cursor:pointer;border:0;flex:none}
+.toggle i{display:block;width:21px;height:21px;background:white;border-radius:50%;margin:2px;transition:.2s}
+.toggle.on{background:var(--good)}.toggle.on i{transform:translateX(21px)}
+.notice{font-size:12px;color:var(--muted);padding:10px 12px;border-radius:12px;background:rgba(255,209,102,.06);border:1px solid rgba(255,209,102,.18);margin-top:10px}
+.hidden{display:none!important}
+.toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));
+  transform:translate(-50%,14px);max-width:min(92vw,520px);
+  background:rgba(10,22,38,.96);border:1px solid var(--line);color:#dbe8f7;padding:10px 14px;border-radius:14px;
+  font-size:13px;line-height:1.4;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.22s;z-index:50;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:420px){.options{grid-template-columns:1fr}.tapArea{height:280px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="brand"><div class="brandIcon">🧠</div><div>Kids Brain Gym</div></div>
+    <div class="topActions">
+      <button class="installBtn" id="installBtn">⬇️ Install</button>
+      <button class="iconBtn" id="settingsBtn" aria-label="Voice settings">⚙️</button>
+    </div>
+  </div>
+
+  <section id="home" class="screen active">
+    <div class="hero">
+      <h1>Brain Gym 🧠</h1>
+      <p>Fun thinking, memory, math, and focus games for kids</p>
+      <div class="badges">
+        <span class="badge">🔊 English Voice</span>
+        <span class="badge">📱 Installable App</span>
+        <span class="badge">🏆 Best Score</span>
+      </div>
+    </div>
+    <div class="sectionTitle"><h2>Choose a game</h2><span>A few minutes a day</span></div>
+    <div class="games">
+      <button class="gameCard" data-game="word"><div class="gameIcon">🔤</div><div><h3>Word Builder</h3><p>Listen and choose the correct English word.</p></div><div class="chev">›</div></button>
+      <button class="gameCard" data-game="logic"><div class="gameIcon">🧩</div><div><h3>Logic Patterns</h3><p>Complete the pattern and find the next number.</p></div><div class="chev">›</div></button>
+      <button class="gameCard" data-game="math"><div class="gameIcon">🛒</div><div><h3>Math Shopkeeper</h3><p>Solve the calculation.</p></div><div class="chev">›</div></button>
+      <button class="gameCard" data-game="focus"><div class="gameIcon">🎯</div><div><h3>Focus Tap</h3><p>Tap fast when it turns green — wait when it's red.</p></div><div class="chev">›</div></button>
+    </div>
+    <div class="sectionTitle"><h2>Your progress</h2><span>On this device</span></div>
+    <div class="stats">
+      <div class="stat"><b id="bestAll">0</b><span>Best Score</span></div>
+      <div class="stat"><b id="played">0</b><span>Games</span></div>
+      <div class="stat"><b id="streakHome">0</b><span>Best Streak</span></div>
+    </div>
+  </section>
+
+  <section id="game" class="screen">
+    <div class="panel">
+      <div class="gameHeader">
+        <button class="backBtn" id="backBtn">← Back</button>
+        <div class="title"><h2 id="gameTitle">Game</h2><small id="gameSubtitle"></small></div>
+      </div>
+      <div class="progressWrap"><div class="progress" id="progress"></div></div>
+      <div class="hud">
+        <div class="hudItem"><b id="score">0</b><span>Score</span></div>
+        <div class="hudItem"><b id="round">0/30</b><span>Round</span></div>
+        <div class="hudItem"><b id="streak">0</b><span>Streak</span></div>
+      </div>
+      <div id="question" class="question"></div>
+      <div class="voiceRow">
+        <button class="voiceBtn" id="replayBtn">🔊 Replay</button>
+        <button class="voiceBtn" id="voiceUnlock">🎙️ Enable voice</button>
+      </div>
+      <div id="options" class="options"></div>
+      <div id="feedback" class="feedback" aria-live="polite"></div>
+      <div id="tapArea" class="tapArea hidden"><div class="tapCircle" id="tapCircle">Ready?</div></div>
+      <div id="tapHint" class="tapHint hidden">🟢 Tap when green · 🔴 Wait when red</div>
+    </div>
+  </section>
+
+  <section id="result" class="screen">
+    <div class="resultCard">
+      <div class="resultEmoji" id="resultEmoji">🏆</div>
+      <h2 id="resultTitle">Great job!</h2>
+      <div class="resultScore" id="resultScore">0</div>
+      <p id="resultText">You finished the game.</p>
+      <div class="resultActions">
+        <button class="primary" id="againBtn">🔁 Play again</button>
+        <button class="secondary" id="homeBtn">🏠 Home</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="settings" class="screen">
+    <div class="settings">
+      <div class="gameHeader"><button class="backBtn" id="settingsBack">← Back</button><div class="title"><h2>Voice &amp; Settings</h2></div></div>
+      <div class="setting">
+        <label><b>🔊 Voice</b><button class="toggle on" id="voiceToggle" aria-label="Toggle voice"><i></i></button></label>
+        <small>Turn spoken questions on or off. All narration is English.</small>
+      </div>
+      <div class="setting">
+        <b>🎙️ Voice</b>
+        <select id="voiceSelect"><option>Loading voices…</option></select>
+        <small>English (United States) voices are listed first and used by default.</small>
+      </div>
+      <div class="setting">
+        <b>⚡ Speaking speed</b>
+        <div class="rangeRow"><input id="rate" type="range" min=".65" max="1.15" step=".05" value=".88"><div class="rangeVal" id="rateVal">0.88×</div></div>
+      </div>
+      <div class="setting">
+        <b>🔉 Volume</b>
+        <div class="rangeRow"><input id="volume" type="range" min="0" max="1" step=".05" value="1"><div class="rangeVal" id="volumeVal">100%</div></div>
+      </div>
+      <div class="notice">💡 If no voice is heard, install an English speech voice in your device settings, then tap <b>Voice test</b>.</div>
+      <div class="setting"><button class="secondary" id="testVoice">▶️ Voice test</button></div>
+    </div>
+  </section>
+</div>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<!-- ============================================================
+     INLINE PWA SETUP — builds the manifest + icons at runtime
+     so this single HTML file is a full installable PWA.
+     ============================================================ -->
+<script>
+(function setupPWA(){
+  /* ---- 1. Build the icon as an SVG data URI ---- */
+  const iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+    <defs>
+      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#62d7ff"/>
+        <stop offset="1" stop-color="#8b7cff"/>
+      </linearGradient>
+    </defs>
+    <rect width="512" height="512" rx="112" fill="url(#g)"/>
+    <rect x="46" y="46" width="420" height="420" rx="92" fill="#07111f"/>
+    <text x="256" y="272" font-size="240" text-anchor="middle"
+      dominant-baseline="middle"
+      font-family="Apple Color Emoji,Segoe UI Emoji,Noto Color Emoji,sans-serif">🧠</text>
+  </svg>`;
+  const iconUrl = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(iconSvg);
+
+  /* ---- 2. Manifest as a Blob URL (real, valid manifest) ---- */
+  const manifest = {
+    name: "Kids Brain Gym",
+    short_name: "Brain Gym",
+    description: "Fun English voice brain training games for kids: word building, logic patterns, math, and focus.",
+    start_url: ".",
+    scope: ".",
+    display: "standalone",
+    orientation: "portrait",
+    background_color: "#07111f",
+    theme_color: "#07111f",
+    lang: "en-US",
+    dir: "ltr",
+    categories: ["education", "games", "kids"],
+    icons: [
+      { src: iconUrl, sizes: "192x192", type: "image/svg+xml", purpose: "any" },
+      { src: iconUrl, sizes: "512x512", type: "image/svg+xml", purpose: "any" },
+      { src: iconUrl, sizes: "512x512", type: "image/svg+xml", purpose: "maskable" }
+    ]
+  };
+  try{
+    const manifestBlob = new Blob([JSON.stringify(manifest)], { type: "application/manifest+json" });
+    const manifestUrl  = URL.createObjectURL(manifestBlob);
+    document.getElementById("manifestLink").setAttribute("href", manifestUrl);
+  }catch(e){ /* ignore — app still works */ }
+
+  /* ---- 3. Favicon (SVG data URI) ---- */
+  document.getElementById("favicon").setAttribute("href", iconUrl);
+
+  /* ---- 4. Apple touch icon — iOS needs a real PNG.
+          We render the same artwork to a 180×180 canvas. ---- */
+  try{
+    const c = document.createElement("canvas");
+    c.width = 180; c.height = 180;
+    const ctx = c.getContext("2d");
+    // Gradient bg
+    const grad = ctx.createLinearGradient(0,0,180,180);
+    grad.addColorStop(0, "#62d7ff");
+    grad.addColorStop(1, "#8b7cff");
+    ctx.fillStyle = grad;
+    if(ctx.roundRect){ ctx.beginPath(); ctx.roundRect(0,0,180,180,40); ctx.fill(); }
+    else { ctx.fillRect(0,0,180,180); }
+    // Dark plate
+    ctx.fillStyle = "#07111f";
+    if(ctx.roundRect){ ctx.beginPath(); ctx.roundRect(16,16,148,148,32); ctx.fill(); }
+    else { ctx.fillRect(16,16,148,148); }
+    // Emoji
+    ctx.font = '110px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillText("🧠", 90, 96);
+    document.getElementById("appleIcon").setAttribute("href", c.toDataURL("image/png"));
+  }catch(e){ /* ignore */ }
+})();
+</script>
+
+<script>
+"use strict";
+
+/* ============================================================
+   APP LOGIC — identical to the previous working version
+   ============================================================ */
+const $ = id => document.getElementById(id);
+const screens = ["home","game","result","settings"];
+
+const store = {
+  get(k,d){ try{ const v=localStorage.getItem(k); return v===null?d:v; }catch(e){ return d; } },
+  set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} },
+  getJSON(k,d){ try{ const v=localStorage.getItem(k); return v?JSON.parse(v):d; }catch(e){ return d; } },
+  setJSON(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+};
+
+function show(name){ screens.forEach(s => $(s).classList.toggle("active", s===name)); }
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+
+let toastTimer=null;
+function toast(msg, ms=2600){
+  const el=$("toast"); if(!el) return;
+  el.textContent=msg; el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove("show"),ms);
+}
+function buzz(p){ try{ navigator.vibrate && navigator.vibrate(p); }catch(e){} }
+
+const state = {
+  game:null, score:0, round:0, streak:0, total:30,
+  current:null, pool:[], locked:false, timers:[],
+  tapState:"idle", tapStart:0,
+  voiceOn: store.get("brainVoice","1")!=="0",
+  rate: Number(store.get("brainRate",".88")),
+  volume: Number(store.get("brainVolume","1")),
+  voices:[], voiceIndex: Number(store.get("brainVoiceIndex","-1")), voice:null
+};
+
+function setT(fn,ms){
+  const id=setTimeout(()=>{ state.timers=state.timers.filter(t=>t!==id); fn(); },ms);
+  state.timers.push(id); return id;
+}
+function clearTimers(){ state.timers.forEach(clearTimeout); state.timers=[]; }
+
+const data = {
+  word:[
+    {q:"This animal says Meow.", a:"Cat", opts:["Cat","Dog","Cow","Fish"]},
+    {q:"You wear these on your feet.", a:"Shoes", opts:["Shoes","Hat","Shirt","Gloves"]},
+    {q:"This shines in the sky at night.", a:"Moon", opts:["Moon","Chair","Apple","Book"]},
+    {q:"You use this to write.", a:"Pencil", opts:["Pencil","Spoon","Ball","Shoe"]},
+    {q:"A baby dog is called a…", a:"Puppy", opts:["Puppy","Kitten","Calf","Chick"]},
+    {q:"You drink this when you are thirsty.", a:"Water", opts:["Water","Stone","Paper","Sand"]},
+    {q:"This fruit is usually yellow and curved.", a:"Banana", opts:["Banana","Orange","Grape","Mango"]},
+    {q:"A place where books are kept.", a:"Library", opts:["Library","Kitchen","Garden","Garage"]},
+    {q:"The opposite of hot is…", a:"Cold", opts:["Cold","Fast","Tall","Bright"]},
+    {q:"You sleep on this.", a:"Bed", opts:["Bed","Table","Door","Bike"]},
+    {q:"This animal gives us milk.", a:"Cow", opts:["Cow","Lion","Duck","Horse"]},
+    {q:"You read this at school.", a:"Book", opts:["Book","Shoe","Cup","Ball"]},
+    {q:"The opposite of big is…", a:"Small", opts:["Small","Long","Fast","Cold"]},
+    {q:"You cut paper with these.", a:"Scissors", opts:["Scissors","Pencil","Plate","Clock"]},
+    {q:"You sit on this.", a:"Chair", opts:["Chair","Bed","Spoon","Bag"]},
+    {q:"The color of grass is usually…", a:"Green", opts:["Green","Purple","Black","Pink"]},
+    {q:"We use this to tell time.", a:"Clock", opts:["Clock","Fork","Pillow","Brush"]},
+    {q:"A baby cat is called a…", a:"Kitten", opts:["Kitten","Puppy","Calf","Foal"]},
+    {q:"You brush your teeth with a…", a:"Toothbrush", opts:["Toothbrush","Notebook","Shoe","Ruler"]},
+    {q:"The sun rises in the…", a:"East", opts:["East","West","North","South"]},
+    {q:"You wear a hat on your…", a:"Head", opts:["Head","Hand","Foot","Knee"]},
+    {q:"A place with many trees is a…", a:"Forest", opts:["Forest","Kitchen","Classroom","Shop"]},
+    {q:"A fish lives in…", a:"Water", opts:["Water","Sand","Sky","Fire"]},
+    {q:"The opposite of fast is…", a:"Slow", opts:["Slow","High","Young","Bright"]},
+    {q:"We use an umbrella when it…", a:"Rains", opts:["Rains","Snows","Shines","Stops"]},
+    {q:"A person who teaches is a…", a:"Teacher", opts:["Teacher","Farmer","Driver","Baker"]},
+    {q:"The opposite of up is…", a:"Down", opts:["Down","Near","Open","Round"]},
+    {q:"You smell with your…", a:"Nose", opts:["Nose","Eyes","Ears","Hands"]},
+    {q:"You hear with your…", a:"Ears", opts:["Ears","Nose","Feet","Eyes"]},
+    {q:"This animal is known for hopping.", a:"Rabbit", opts:["Rabbit","Fish","Cow","Snake"]}
+  ],
+  logic:[
+    {q:"2, 4, 6, 8, ?", a:"10", opts:["9","10","11","12"]},
+    {q:"5, 10, 15, 20, ?", a:"25", opts:["22","24","25","30"]},
+    {q:"1, 3, 5, 7, ?", a:"9", opts:["8","9","10","11"]},
+    {q:"10, 9, 8, 7, ?", a:"6", opts:["5","6","7","8"]},
+    {q:"3, 6, 12, 24, ?", a:"48", opts:["36","42","48","50"]},
+    {q:"20, 18, 16, 14, ?", a:"12", opts:["10","11","12","13"]},
+    {q:"1, 4, 9, 16, ?", a:"25", opts:["20","24","25","26"]},
+    {q:"2, 5, 8, 11, ?", a:"14", opts:["12","13","14","15"]},
+    {q:"100, 90, 80, 70, ?", a:"60", opts:["50","55","60","65"]},
+    {q:"7, 14, 21, 28, ?", a:"35", opts:["32","34","35","36"]},
+    {q:"4, 8, 12, 16, ?", a:"20", opts:["18","20","22","24"]},
+    {q:"30, 27, 24, 21, ?", a:"18", opts:["15","17","18","19"]},
+    {q:"2, 6, 10, 14, ?", a:"18", opts:["16","18","20","22"]},
+    {q:"1, 2, 4, 8, ?", a:"16", opts:["10","12","14","16"]},
+    {q:"50, 45, 40, 35, ?", a:"30", opts:["25","28","30","32"]},
+    {q:"6, 12, 18, 24, ?", a:"30", opts:["28","30","32","36"]},
+    {q:"9, 18, 27, 36, ?", a:"45", opts:["40","44","45","46"]},
+    {q:"40, 35, 30, 25, ?", a:"20", opts:["15","20","22","24"]},
+    {q:"3, 9, 27, 81, ?", a:"243", opts:["162","180","243","324"]},
+    {q:"64, 32, 16, 8, ?", a:"4", opts:["2","3","4","6"]},
+    {q:"11, 22, 33, 44, ?", a:"55", opts:["50","54","55","56"]},
+    {q:"5, 8, 11, 14, ?", a:"17", opts:["15","16","17","18"]},
+    {q:"90, 80, 70, 60, ?", a:"50", opts:["40","45","50","55"]},
+    {q:"2, 3, 5, 7, ?", a:"11", opts:["9","10","11","12"]},
+    {q:"10, 20, 40, 80, ?", a:"160", opts:["120","140","160","180"]},
+    {q:"7, 10, 13, 16, ?", a:"19", opts:["18","19","20","21"]},
+    {q:"25, 20, 15, 10, ?", a:"5", opts:["0","5","8","10"]},
+    {q:"8, 16, 24, 32, ?", a:"40", opts:["36","38","40","42"]},
+    {q:"100, 95, 90, 85, ?", a:"80", opts:["75","78","80","82"]},
+    {q:"12, 24, 36, 48, ?", a:"60", opts:["54","58","60","62"]}
+  ],
+  math:[
+    {q:"50 - 20 = ?", a:"30", opts:["20","25","30","35"]},
+    {q:"100 - 45 = ?", a:"55", opts:["45","50","55","65"]},
+    {q:"30 + 30 = ?", a:"60", opts:["50","55","60","70"]},
+    {q:"80 - 25 = ?", a:"55", opts:["45","50","55","65"]},
+    {q:"10 + 20 + 5 = ?", a:"35", opts:["25","30","35","40"]},
+    {q:"90 - 30 - 20 = ?", a:"40", opts:["30","40","50","60"]},
+    {q:"50 - 25 = ?", a:"25", opts:["15","20","25","30"]},
+    {q:"15 × 2 = ?", a:"30", opts:["20","25","30","35"]},
+    {q:"70 - 35 = ?", a:"35", opts:["25","30","35","45"]},
+    {q:"40 + 15 = ?", a:"55", opts:["45","50","55","60"]},
+    {q:"60 - 15 = ?", a:"45", opts:["35","40","45","50"]},
+    {q:"20 + 20 + 20 = ?", a:"60", opts:["40","50","60","70"]},
+    {q:"100 - 35 = ?", a:"65", opts:["55","60","65","75"]},
+    {q:"45 + 15 = ?", a:"60", opts:["50","55","60","65"]},
+    {q:"90 - 25 = ?", a:"65", opts:["55","60","65","70"]},
+    {q:"12 × 2 = ?", a:"24", opts:["20","22","24","26"]},
+    {q:"5 × 4 = ?", a:"20", opts:["15","20","25","30"]},
+    {q:"75 - 30 = ?", a:"45", opts:["35","40","45","50"]},
+    {q:"25 + 25 = ?", a:"50", opts:["40","45","50","55"]},
+    {q:"80 - 10 - 15 = ?", a:"55", opts:["45","50","55","60"]},
+    {q:"35 + 20 = ?", a:"55", opts:["45","50","55","60"]},
+    {q:"50 - 18 = ?", a:"32", opts:["28","30","32","35"]},
+    {q:"10 × 5 = ?", a:"50", opts:["40","45","50","55"]},
+    {q:"100 - 60 = ?", a:"40", opts:["30","40","50","60"]},
+    {q:"15 + 15 + 10 = ?", a:"40", opts:["35","40","45","50"]},
+    {q:"90 - 40 = ?", a:"50", opts:["40","45","50","55"]},
+    {q:"8 × 3 = ?", a:"24", opts:["18","20","24","28"]},
+    {q:"65 + 5 = ?", a:"70", opts:["60","65","70","75"]},
+    {q:"70 - 22 = ?", a:"48", opts:["42","45","48","50"]},
+    {q:"40 + 30 + 10 = ?", a:"80", opts:["70","75","80","90"]}
+  ]
+};
+
+const titles = {
+  word:["Word Builder","Listen and choose the correct word"],
+  logic:["Logic Patterns","Find the pattern"],
+  math:["Math Shopkeeper","Solve the calculation"],
+  focus:["Focus Tap","Reaction + attention"]
+};
+
+function readStats(){ return store.getJSON("brainStats",{best:0,played:0,streak:0}); }
+function renderStats(){
+  const d=readStats();
+  $("bestAll").textContent=d.best||0;
+  $("played").textContent=d.played||0;
+  $("streakHome").textContent=d.streak||0;
+}
+function saveGame(finalScore){
+  const d=readStats();
+  d.best=Math.max(d.best||0,finalScore);
+  d.played=(d.played||0)+1;
+  d.streak=Math.max(d.streak||0,state.streak);
+  store.setJSON("brainStats",d);
+  renderStats();
+}
+
+let audioCtx=null;
+function beep(kind="tap"){
+  try{
+    const AC=window.AudioContext||window.webkitAudioContext; if(!AC) return;
+    if(!audioCtx) audioCtx=new AC();
+    if(audioCtx.state==="suspended") audioCtx.resume();
+    const good=kind==="good", bad=kind==="bad";
+    const o=audioCtx.createOscillator(), g=audioCtx.createGain();
+    const now=audioCtx.currentTime;
+    o.type=good?"sine":bad?"sawtooth":"triangle";
+    o.frequency.setValueAtTime(good?660:bad?180:420,now);
+    o.frequency.exponentialRampToValueAtTime(good?880:bad?120:520,now+.12);
+    g.gain.setValueAtTime(.0001,now);
+    g.gain.exponentialRampToValueAtTime(.08,now+.01);
+    g.gain.exponentialRampToValueAtTime(.0001,now+.16);
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start(now); o.stop(now+.18);
+  }catch(e){}
+}
+
+const speechSupported = ("speechSynthesis" in window) && ("SpeechSynthesisUtterance" in window);
+
+function bestVoiceFor(lang, voices){
+  if(!voices.length) return null;
+  const want=(lang||"en-US").toLowerCase();
+  const base=want.split("-")[0];
+  return voices.find(v => (v.lang||"").toLowerCase()===want)
+      || voices.find(v => (v.lang||"").toLowerCase().replace("_","-")===want)
+      || voices.find(v => (v.lang||"").toLowerCase().startsWith(base+"-"))
+      || voices.find(v => (v.lang||"").toLowerCase()===base)
+      || null;
+}
+
+function speak(text, opts={}){
+  const force=opts.force===true;
+  const lang=opts.lang||"en-US";
+  if(!force && !state.voiceOn) return false;
+  if(!speechSupported){ toast("This browser has no speech support."); return false; }
+  const synth=window.speechSynthesis;
+  try{
+    synth.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    const v=state.voice||bestVoiceFor(lang,state.voices);
+    if(v){ u.voice=v; u.lang=v.lang||lang; } else { u.lang=lang; }
+    u.rate=state.rate; u.volume=state.volume; u.pitch=1;
+    u.onerror=()=>{};
+    setTimeout(()=>{ try{ synth.speak(u); if(synth.paused) synth.resume(); }catch(e){} },60);
+    return true;
+  }catch(e){ return false; }
+}
+
+function loadVoices(){
+  if(!speechSupported){
+    const sel=$("voiceSelect"); if(sel) sel.innerHTML="<option>Speech not supported</option>";
+    return;
+  }
+  const voices=window.speechSynthesis.getVoices()||[];
+  state.voices=voices;
+  const sel=$("voiceSelect"); if(!sel) return;
+  if(!voices.length){ sel.innerHTML="<option>Loading voices…</option>"; return; }
+  const rank=v=>{
+    const l=(v.lang||"").toLowerCase().replace("_","-");
+    if(l==="en-us") return 0;
+    if(l.startsWith("en-")) return 1;
+    if(l==="en") return 2;
+    return 3;
+  };
+  const ordered=[...voices].sort((a,b)=>rank(a)-rank(b));
+  sel.innerHTML="";
+  ordered.forEach(v=>{
+    const idx=voices.indexOf(v);
+    const o=document.createElement("option");
+    o.value=String(idx);
+    o.textContent=`${v.name} — ${v.lang}`;
+    sel.appendChild(o);
+  });
+  const saved=state.voiceIndex;
+  if(Number.isInteger(saved)&&saved>=0&&voices[saved]) state.voice=voices[saved];
+  else state.voice=bestVoiceFor("en-US",voices);
+  if(state.voice) sel.value=String(voices.indexOf(state.voice));
+}
+
+function unlockVoice(){
+  state.voiceOn=true;
+  store.set("brainVoice","1");
+  $("voiceToggle")?.classList.add("on");
+  loadVoices();
+  const ok=speak("Welcome to Kids Brain Gym. Voice is on.",{force:true});
+  if(ok) toast("🔊 Voice enabled");
+  else if(!speechSupported) toast("This browser has no speech support.");
+  else toast("No voice found. Install an English voice in your device settings.");
+}
+
+function startGame(type){
+  clearTimers();
+  if(speechSupported) window.speechSynthesis.cancel();
+  state.game=type; state.score=0; state.round=0; state.streak=0;
+  state.locked=false; state.current=null; state.tapState="idle";
+  state.pool = type==="focus" ? [] : shuffle(data[type]).slice(0,state.total);
+  $("gameTitle").textContent=titles[type][0];
+  $("gameSubtitle").textContent=titles[type][1];
+  const isFocus = type==="focus";
+  $("tapArea").classList.toggle("hidden",!isFocus);
+  $("tapHint").classList.toggle("hidden",!isFocus);
+  $("options").classList.toggle("hidden",isFocus);
+  $("replayBtn").classList.toggle("hidden",isFocus);
+  $("question").classList.toggle("hidden",isFocus);
+  $("feedback").textContent="";
+  $("score").textContent="0";
+  $("streak").textContent="0";
+  $("round").textContent=`0/${state.total}`;
+  $("progress").style.width="0%";
+  show("game"); beep("tap");
+  if(speechSupported) loadVoices();
+  nextRound();
+}
+
+function nextRound(){
+  state.round++;
+  if(state.round>state.total){ finish(); return; }
+  state.locked=false;
+  $("feedback").textContent="";
+  $("feedback").className="feedback";
+  $("round").textContent=`${state.round}/${state.total}`;
+  $("score").textContent=state.score;
+  $("streak").textContent=state.streak;
+  $("progress").style.width=`${((state.round-1)/state.total)*100}%`;
+  if(state.game==="focus") startFocus(); else renderQuestion();
+}
+
+function renderQuestion(){
+  const item=state.pool[state.round-1];
+  state.current=item;
+  const q=document.createElement("div");
+  q.className="questionText";
+  q.textContent=item.q;
+  const sub=document.createElement("span");
+  sub.className="questionSub";
+  sub.textContent="🔊 Listen, then choose an answer.";
+  q.appendChild(sub);
+  $("question").replaceChildren(q);
+  const box=$("options"); box.innerHTML="";
+  shuffle(item.opts).forEach(opt=>{
+    const b=document.createElement("button");
+    b.type="button"; b.className="option"; b.textContent=opt;
+    b.addEventListener("click",()=>answer(opt,b));
+    box.appendChild(b);
+  });
+  speak(item.q,{lang:"en-US"});
+}
+
+function answer(value,btn){
+  if(state.locked||!state.current) return;
+  state.locked=true;
+  document.querySelectorAll(".option").forEach(b=>b.disabled=true);
+  const correct=String(value).trim()===String(state.current.a).trim();
+  if(correct){
+    btn.classList.add("correct");
+    state.streak++;
+    state.score+=10+(state.streak-1)*2;
+    $("feedback").textContent="Great job! Correct! 🎉";
+    $("feedback").className="feedback good";
+    beep("good"); buzz(25);
+    speak("Great job!",{lang:"en-US"});
+  }else{
+    btn.classList.add("wrong");
+    state.streak=0;
+    document.querySelectorAll(".option").forEach(b=>{
+      if(b.textContent===state.current.a) b.classList.add("correct");
+    });
+    $("feedback").textContent=`Correct answer: ${state.current.a}`;
+    $("feedback").className="feedback bad";
+    beep("bad"); buzz([40,60,40]);
+    speak(`The answer is ${state.current.a}.`,{lang:"en-US"});
+  }
+  $("score").textContent=state.score;
+  $("streak").textContent=state.streak;
+  $("progress").style.width=`${(state.round/state.total)*100}%`;
+  setT(nextRound,correct?900:1500);
+}
+
+const FOCUS_RESPONSE_MS=1500;
+function startFocus(){
+  clearTimers();
+  state.tapState="wait"; state.tapStart=0;
+  $("question").classList.add("hidden");
+  $("tapArea").className="tapArea stop";
+  $("tapCircle").textContent="Wait…";
+  $("feedback").textContent="";
+  $("feedback").className="feedback";
+  const delay=900+Math.random()*2300;
+  setT(()=>{
+    state.tapState="go"; state.tapStart=performance.now();
+    $("tapArea").className="tapArea go";
+    $("tapCircle").textContent="TAP! 🟢";
+    speak("Now!",{lang:"en-US"});
+    setT(()=>{
+      if(state.tapState!=="go"||state.locked) return;
+      state.locked=true; state.tapState="idle"; state.streak=0;
+      $("tapArea").className="tapArea stop";
+      $("tapCircle").textContent="Too slow! ⏱️";
+      $("feedback").textContent="Too slow! Try to tap faster.";
+      $("feedback").className="feedback bad";
+      beep("bad");
+      $("streak").textContent=state.streak;
+      setT(nextRound,1100);
+    },FOCUS_RESPONSE_MS);
+  },delay);
+}
+
+function tap(){
+  if(state.game!=="focus"||state.locked) return;
+  if(state.tapState==="wait"){
+    state.locked=true; clearTimers(); state.tapState="idle"; state.streak=0;
+    $("tapArea").className="tapArea stop";
+    $("tapCircle").textContent="Too early! 🔴";
+    $("feedback").textContent="Too early! Wait for green.";
+    $("feedback").className="feedback bad";
+    beep("bad"); buzz([40,60,40]);
+    $("streak").textContent=state.streak;
+    setT(nextRound,1100);
+  }else if(state.tapState==="go"){
+    state.locked=true; clearTimers(); state.tapState="idle";
+    const ms=Math.max(1,performance.now()-state.tapStart);
+    const points=Math.max(1,Math.round(100-ms/10));
+    state.score+=points; state.streak++;
+    $("tapCircle").textContent=`${Math.round(ms)} ms ⚡`;
+    $("feedback").textContent=`Nice! +${points} points`;
+    $("feedback").className="feedback good";
+    beep("good"); buzz(25);
+    speak("Nice!",{lang:"en-US"});
+    $("score").textContent=state.score;
+    $("streak").textContent=state.streak;
+    setT(nextRound,900);
+  }
+}
+
+function finish(){
+  clearTimers();
+  if(speechSupported) window.speechSynthesis.cancel();
+  saveGame(state.score);
+  $("progress").style.width="100%";
+  $("resultScore").textContent=state.score;
+  const great=state.score>=250, good=state.score>=120;
+  $("resultEmoji").textContent=great?"🏆":good?"🌟":"💪";
+  $("resultTitle").textContent=great?"Amazing!":good?"Well done!":"Good try!";
+  $("resultText").textContent=`You completed ${state.total} rounds. Your best score is saved on this device.`;
+  speak(great?"Amazing! You did great!":"Good try! Well done.",{lang:"en-US"});
+  show("result");
+}
+
+function goHome(){
+  clearTimers();
+  if(speechSupported) window.speechSynthesis.cancel();
+  show("home"); renderStats();
+}
+
+function initSettings(){
+  $("voiceToggle").classList.toggle("on",state.voiceOn);
+  $("rate").value=state.rate; $("rateVal").textContent=state.rate.toFixed(2)+"×";
+  $("volume").value=state.volume; $("volumeVal").textContent=Math.round(state.volume*100)+"%";
+  loadVoices();
+}
+
+document.querySelectorAll(".gameCard").forEach(b=>b.addEventListener("click",()=>startGame(b.dataset.game)));
+$("backBtn").addEventListener("click",goHome);
+$("homeBtn").addEventListener("click",goHome);
+$("againBtn").addEventListener("click",()=>startGame(state.game));
+$("replayBtn").addEventListener("click",()=>{
+  if(!state.current) return;
+  if(!state.voiceOn){ state.voiceOn=true; store.set("brainVoice","1"); $("voiceToggle")?.classList.add("on"); }
+  speak(state.current.q,{force:true,lang:"en-US"});
+});
+$("voiceUnlock").addEventListener("click",unlockVoice);
+$("tapArea").addEventListener("pointerdown",e=>{ e.preventDefault(); tap(); });
+$("settingsBtn").addEventListener("click",()=>{ initSettings(); show("settings"); });
+$("settingsBack").addEventListener("click",()=>show("home"));
+$("voiceToggle").addEventListener("click",()=>{
+  state.voiceOn=!state.voiceOn;
+  store.set("brainVoice",state.voiceOn?"1":"0");
+  $("voiceToggle").classList.toggle("on",state.voiceOn);
+  if(state.voiceOn) unlockVoice();
+  else if(speechSupported) window.speechSynthesis.cancel();
+});
+$("rate").addEventListener("input",e=>{
+  state.rate=Number(e.target.value);
+  store.set("brainRate",String(state.rate));
+  $("rateVal").textContent=state.rate.toFixed(2)+"×";
+});
+$("volume").addEventListener("input",e=>{
+  state.volume=Number(e.target.value);
+  store.set("brainVolume",String(state.volume));
+  $("volumeVal").textContent=Math.round(state.volume*100)+"%";
+});
+$("voiceSelect").addEventListener("change",e=>{
+  if(!speechSupported) return;
+  const voices=window.speechSynthesis.getVoices();
+  const v=voices[Number(e.target.value)];
+  if(v){
+    state.voice=v;
+    state.voiceIndex=Number(e.target.value);
+    store.set("brainVoiceIndex",e.target.value);
+  }
+});
+$("testVoice").addEventListener("click",()=>speak("Hello! This is the Kids Brain Gym voice test.",{force:true,lang:"en-US"}));
+
+if(speechSupported){
+  window.speechSynthesis.addEventListener("voiceschanged",loadVoices);
+  loadVoices();
+  setTimeout(loadVoices,300);
+  setTimeout(loadVoices,1200);
+}
+renderStats();
+initSettings();
+
+/* ---------- PWA install prompt ---------- */
+let deferredInstallPrompt=null;
+const installBtn=$("installBtn");
+window.addEventListener("beforeinstallprompt",e=>{
+  e.preventDefault();
+  deferredInstallPrompt=e;
+  installBtn.classList.add("show");
+});
+installBtn.addEventListener("click",async()=>{
+  if(!deferredInstallPrompt) return;
+  deferredInstallPrompt.prompt();
+  try{ await deferredInstallPrompt.userChoice; }catch(_){}
+  deferredInstallPrompt=null;
+  installBtn.classList.remove("show");
+});
+window.addEventListener("appinstalled",()=>{
+  installBtn.classList.remove("show");
+  toast("✅ App installed!");
+});
+
+/* iOS hint (Safari has no install prompt) */
+(function iosHint(){
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  const standalone = window.navigator.standalone === true ||
+    window.matchMedia("(display-mode: standalone)").matches;
+  if(isIOS && !standalone && !store.get("iosHintShown","")){
+    store.set("iosHintShown","1");
+    setTimeout(()=>toast("📲 Tap Share → Add to Home Screen to install",5000),1800);
+  }
+})();
+</script>
+</body>
+</html>
